@@ -10,11 +10,11 @@ npm install
 npm run dev
 ```
 
-### Examples
+### Examples:
 
 **Create a loader**
 
-Remove all `'debugger'` from resource code.
+> this loader's function is removing all `'debugger'` from resource code.
 
 ```JavaScript
 // removeDebuggerLoader.js
