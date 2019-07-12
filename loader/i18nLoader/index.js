@@ -14,8 +14,8 @@ function i18nLoader(source, map) {
   const newSource = source
     .split("\n")
     .map(line => {
-
       // if the line is a sing line comment. 
+      REG.SING_LINE_COMMENT.lastIndex = 0
       if (REG.SING_LINE_COMMENT.test(line)) {
 
         // if there is a 'noi18nthisblockstart' appears, it will not processed until a 'noi18nthisblockstart' appears.

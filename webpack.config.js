@@ -11,9 +11,8 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        // exclude: /(node_modules|bower_components)/,
         include: /src/,
-        loader: require.resolve('./loader/removeDebuggerLoader.js'),
+        loader: require.resolve('./loader/i18nLoader/index.js'),
       },
       {
         test: /\.css$/,
@@ -22,11 +21,7 @@ module.exports = {
           'css-loader'
         ]
       },
-      {
-        test: /\.js$/,
-        include: /src/,
-        loader: require.resolve('./loader/i18nLoader/index.js'),
-      },
+      
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
