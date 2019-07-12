@@ -1,5 +1,5 @@
 const uuidv3 = require('uuid/v3');
-var REG = require("../reg")
+var REG = require("./reg")
 
 exports.getKeyByValue = function (value, obj) {
   let keys = Object.keys(obj);

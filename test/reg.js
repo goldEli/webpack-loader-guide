@@ -1,5 +1,5 @@
 var assert = require("assert");
-var REG = require("../loader/reg");
+var REG = require("../loader/i18nLoader/reg");
 
 describe("Regular Expresstion", function() {
 

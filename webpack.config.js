@@ -10,17 +10,17 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        // exclude: /(node_modules|bower_components)/,
+        include: /src/,
+        loader: require.resolve('./loader/removeDebuggerLoader.js'),
+      },
+      {
         test: /\.css$/,
         use: [
           'style-loader',
           'css-loader'
         ]
-      },
-      {
-        test: /\.js$/,
-        // exclude: /(node_modules|bower_components)/,
-        include: /src/,
-        loader: require.resolve('./loader/removeDebuggerLoader.js'),
       },
       {
         test: /\.js$/,

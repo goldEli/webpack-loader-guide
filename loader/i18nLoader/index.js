@@ -1,5 +1,5 @@
 var i18n = require("../../i18n/index")["zh"]
-var REG = require("../reg")
+var REG = require("./reg")
 var utility = require("./utility")
 
 function i18nLoader(source, map) {
@@ -15,9 +15,10 @@ function i18nLoader(source, map) {
     .split("\n")
     .map(line => {
 
-      // if the line is a sing line comment, skip it. 
+      // if the line is a sing line comment. 
       if (REG.SING_LINE_COMMENT.test(line)) {
 
+        // if there is a 'noi18nthisblockstart' appears, it will not processed until a 'noi18nthisblockstart' appears.
         if (REG.NO_I18N_THIS_BLOCK_START.test(line)) {
           skip = true
         }
@@ -30,6 +31,7 @@ function i18nLoader(source, map) {
         return line
       }
 
+      // if the multi-line is a sing line comment.
       if (REG.MULTI_LINE_COMMENT_START.test(line)) {
         skip = true
       }
