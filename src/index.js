@@ -5,6 +5,22 @@ import i18n from "../i18n/index"
 import Component1 from "./Component1"
 import I18nIgnoreComponent from "./I18nIgnoreComponent"
 
+// "我是单行注释，不要国际化我"
+
+/**
+ * 这里是多行注释，不要国际化我
+ * 这里是多行注释，不要国际化我
+ * "这里是多行注释，不要国际化我"
+ * 这里是多行注释，不要国际化我
+ * 这里是多行注释，不要国际化我
+ */
+
+// noi18nthisblockstart
+
+var test = {1: "这个区域忽略国际化", 2: "请不要国际化我"};
+
+// noi18nthisblockend
+
 // Default language is English
 
 window.i18n = i18n['en']

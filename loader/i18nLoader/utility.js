@@ -1,4 +1,5 @@
 const uuidv3 = require('uuid/v3');
+var REG = require("../reg")
 
 exports.getKeyByValue = function (value, obj) {
   let keys = Object.keys(obj);
@@ -14,7 +15,10 @@ exports.getKeyByValue = function (value, obj) {
 exports.addChineseWarning = function(chineseSentence) {
   console.log(
     "\x1b[31m",
-    "新增中文：",
-    `"${uuidv3(chineseSentence, uuidv3.URL)}": ${chineseSentence}`,
+    `"${uuidv3(chineseSentence, uuidv3.URL)}": ${chineseSentence},`,
   )
+}
+
+exports.isI18nIgnore = function (source){
+  return REG.I18N_IGNORE.test(source)
 }
