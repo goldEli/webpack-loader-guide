@@ -2,6 +2,11 @@
 
 > Learn webpack loader with a few examples.
 
+- [x] removeConsoleLogLoader
+- [x] removeDebuggerLoader
+- [x] i18nLoader
+
+
 ### Development setup
 
 ```
