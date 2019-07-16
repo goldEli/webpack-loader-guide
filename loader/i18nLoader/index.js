@@ -1,79 +1,103 @@
-var i18n = require("../../i18n/index")["zh"]
-var REG = require("./reg")
-var utility = require("./utility")
+var i18n = require("../../i18n/index")["zh"];
+var utility = require("./utility");
+// const parser = require("@babel/parser")
+// const traverse = require("@babel/traverse").default
 
+/**
+ * 在调用 this.callback 前，对 source 进行国际化处理
+ * @param {string} source
+ * @param {不知道是啥} map
+ */
 function i18nLoader(source, map) {
-
-  // 当文件中出现 i18nIgnore 就忽略此文件，此文件不做国际化操作
-  if (utility.isI18nIgnore(source)) {
-    this.callback(null, source, map);
-    return 
-  }
-
-  let skip = false
-  const newSource = source
-    .split("\n")
-    .map(line => {
-      // if the line is a sing line comment. 
-      REG.SING_LINE_COMMENT.lastIndex = 0
-      if (REG.SING_LINE_COMMENT.test(line)) {
-
-        // if there is a 'noi18nthisblockstart' appears, it will not processed until a 'noi18nthisblockstart' appears.
-        if (REG.NO_I18N_THIS_BLOCK_START.test(line)) {
-          skip = true
-        }
-  
-        if (REG.NO_I18N_THIS_BLOCK_END.test(line)) {
-          skip = false
-          return line
-        }
-
-        return line
-      }
-
-      // if the multi-line is a sing line comment.
-      if (REG.MULTI_LINE_COMMENT_START.test(line)) {
-        skip = true
-      }
-
-      if (REG.MULTI_LINE_COMMENT_END.test(line)) {
-        skip = false
-        return line
-      }
-      
-
-      return skip ? line : replaceChineseWithTheVariable(line);
-    })
-    .join("\n");
-  this.callback(null, newSource, map);
-
-};
-
-// 将每行中的中文替换成变量
-function replaceChineseWithTheVariable(line) {
-  
-  let newLine;
-
-  // get chinese sentences by line
-  let chineseSentences = line.match(
-    REG.CHINESE_SENTENCE
-  );
-
-  chineseSentences &&
-    chineseSentences.forEach(chineseSentence => {
-      const key = utility.getKeyByValue(chineseSentence, i18n);
-      // chinese sentence in i18n resource
-      if (key) {
-        newLine = newLine
-          ? newLine.replace(chineseSentence, `window.i18n['${key}']`)
-          : line.replace(chineseSentence, `window.i18n['${key}']`);
-      } else {
-        // Throw an error on terminal to inform people that there is a new chinese sentence 
-        utility.addChineseWarning(chineseSentence)
-      }
-    });
-
-  return newLine || line;
+  // let ast = parser.parse(source)
+  // console.log(ast)
+  this.callback(null, handleI18n(source), map);
 }
 
-module.exports = i18nLoader
+/**
+ * 国际化处理
+ * @param {*} source
+ */
+function handleI18n(source) {
+  // 当文件中出现 i18nIgnore 就忽略此文件，不做国际化操作
+  return utility.isI18nIgnore(source) ? source : handleSource(source);
+}
+
+/**
+ * 处理文件每行的内容
+ * 如果是注释或者忽略翻译，跳过不翻译
+ * @param {string} line
+ */
+let skip = false;
+function handleLine(line) {
+  if (utility.isNoI18nBlockStart(line)) {
+    skip = true;
+    return line;
+  }
+
+  if (utility.isNoI18nBlockEnd(line)) {
+    skip = false;
+    return line;
+  }
+
+  if (utility.isSigleLineComment(line)) {
+    // skip = true;
+    return line;
+  }
+
+  if (utility.isNoI18nBlockStart(line)) {
+    skip = true;
+    return line;
+  }
+
+  if (utility.isNoI18nBlockEnd(line)) {
+    skip = false;
+    return line;
+  }
+
+  return skip ? line : utility.replaceChineseWithTheVariable(line, i18n);
+}
+
+/**
+ * 将文件内容按照‘\n’分割成行，对每行内容进行处理（根据语言资源文件将中文语句替换成变量）
+ * @param {string} source 单个文件内容
+ */
+function handleSource(source) {
+  let skip = false;
+  return (
+    source
+      .split("\n")
+      .map(line => handleLine(line))
+      // .map(line => {
+      //   if (utility.isNoI18nBlockStart(line)) {
+      //     skip = true;
+      //     return line;
+      //   }
+
+      //   if (utility.isNoI18nBlockEnd(line)) {
+      //     skip = false;
+      //     return line;
+      //   }
+
+      //   if (utility.isSigleLineComment(line)) {
+      //     skip = true;
+      //     return line;
+      //   }
+
+      //   if (utility.isNoI18nBlockStart(line)) {
+      //     skip = true;
+      //     return line;
+      //   }
+
+      //   if (utility.isNoI18nBlockEnd(line)) {
+      //     skip = false;
+      //     return line;
+      //   }
+
+      //   return skip ? line : utility.replaceChineseWithTheVariable(line, i18n);
+      // })
+      .join("\n")
+  );
+}
+
+module.exports = i18nLoader;
